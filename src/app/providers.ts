@@ -14,6 +14,8 @@ import {
 	eventBusProviders,
 } from "@structured-growth/microservice-sdk";
 import { loadEnvironment } from "./load-environment";
+import { NotesRepository } from "../modules/notes/notes.repository";
+import { NotesService } from "../modules/notes/notes.service";
 
 // load and validate env variables
 loadEnvironment();
@@ -32,6 +34,11 @@ container.register("logResponses", { useValue: process.env.LOG_HTTP_RESPONSES ==
 container.register("LogWriter", logWriters[process.env.LOG_WRITER] || "ConsoleLogWriter", {
 	lifecycle: Lifecycle.Singleton,
 });
+container.register("NotesService", NotesService);
+
+// repositories
+container.register("NotesRepository", NotesRepository);
+
 container.register("Logger", Logger);
 container.register("App", App, { lifecycle: Lifecycle.Singleton });
 
