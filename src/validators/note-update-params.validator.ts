@@ -5,7 +5,7 @@ export const NoteUpdateParamsValidator = joi.object({
 	query: joi.object(),
 	body: joi.object({
 		note: joi.string().max(2000).label("Note"),
-		status: joi.string().valid("archived"),
+		status: joi.string().valid("archived", "active"),
 		metadata: joi
 			.object()
 			.max(10)
