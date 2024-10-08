@@ -5,6 +5,7 @@ import {
 	SearchResultInterface,
 	NotFoundError,
 } from "@structured-growth/microservice-sdk";
+import { isUndefined, omitBy } from "lodash";
 import Note, { NoteCreationAttributes, NoteUpdateAttributes } from "../../../database/models/note";
 import { NoteSearchParamsInterface } from "../../interfaces/note-search-params.interface";
 
@@ -26,6 +27,15 @@ export class NotesRepository implements RepositoryInterface<Note, NoteSearchPara
 		params.userId && (where["userId"] = { [Op.in]: params.userId });
 		params.status && (where["status"] = params.status);
 		params.id && (where["id"] = { [Op.in]: params.id });
+
+		(params.createdAtMin || params.createdAtMax) &&
+			(where["createdAt"] = omitBy(
+				{
+					[Op.gte]: params.createdAtMin,
+					[Op.lte]: params.createdAtMax,
+				},
+				isUndefined
+			));
 
 		if (params.metadata) {
 			where["metadata"] = params.metadata;

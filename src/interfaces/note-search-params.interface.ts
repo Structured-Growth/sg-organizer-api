@@ -5,6 +5,8 @@ export interface NoteSearchParamsInterface extends Omit<DefaultSearchParamsInter
 	orgId?: number;
 	accountId?: number[];
 	userId?: number[];
+	createdAtMin?: Date;
+	createdAtMax?: Date;
 	status?: NoteAttributes["status"];
 	"metadata[customFieldName]"?: string;
 }
