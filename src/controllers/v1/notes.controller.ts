@@ -20,6 +20,7 @@ import { NoteCreateParamsValidator } from "../../validators/note-create-params.v
 import { NoteReadParamsValidator } from "../../validators/note-read-params.validator";
 import { NoteUpdateParamsValidator } from "../../validators/note-update-params.validator";
 import { NoteDeleteParamsValidator } from "../../validators/note-delete-params.validator";
+import { EventMutation } from "@structured-growth/microservice-sdk";
 
 export const publicNoteAttributes = [
 	"id",
@@ -79,6 +80,10 @@ export class NotesController extends BaseController {
 		const note = await this.notesRepository.create(body);
 		this.response.status(201);
 
+		await this.eventBus.publish(
+			new EventMutation(this.principal.arn, note.arn, `${this.appPrefix}:notes/create`, JSON.stringify(body))
+		);
+
 		return {
 			...(pick(note.toJSON(), publicNoteAttributes) as PublicNoteAttributes),
 			arn: note.arn,
@@ -123,6 +128,10 @@ export class NotesController extends BaseController {
 	): Promise<PublicNoteAttributes> {
 		const note = await this.notesRepository.update(noteId, body);
 
+		await this.eventBus.publish(
+			new EventMutation(this.principal.arn, note.arn, `${this.appPrefix}:notes/update`, JSON.stringify(body))
+		);
+
 		return {
 			...(pick(note.toJSON(), publicNoteAttributes) as PublicNoteAttributes),
 			arn: note.arn,
@@ -139,7 +148,18 @@ export class NotesController extends BaseController {
 	@DescribeResource("Note", ({ params }) => Number(params.noteId))
 	@ValidateFuncArgs(NoteDeleteParamsValidator)
 	async delete(@Path() noteId: number): Promise<void> {
+		const note = await this.notesRepository.read(noteId);
+
+		if (!note) {
+			throw new NotFoundError(`Note ${noteId} not found`);
+		}
+
 		await this.notesRepository.delete(noteId);
+
+		await this.eventBus.publish(
+			new EventMutation(this.principal.arn, note.arn, `${this.appPrefix}:notes/delete`, JSON.stringify({}))
+		);
+
 		this.response.status(204);
 	}
 }
