@@ -103,7 +103,7 @@ export class NotesController extends BaseController {
 		const note = await this.notesRepository.read(noteId);
 
 		if (!note) {
-			throw new NotFoundError(`Note ${note} not found`);
+			throw new NotFoundError(`Note ${noteId} not found`);
 		}
 
 		return {
