@@ -12,7 +12,7 @@ module.exports = {
 			},
 			{
 				id: {
-					type: Sequelize.SMALLINT,
+					type: Sequelize.INTEGER,
 					primaryKey: true,
 					autoIncrement: true,
 				},

@@ -21,6 +21,7 @@ import { TaskTypeUpdateBodyInterface } from "../../interfaces/task-type-update-b
 import { TaskTypeRepository } from "../../modules/task-type/task-type.repository";
 import { TaskTypeService } from "../../modules/task-type/task-type.service";
 import { EventMutation } from "@structured-growth/microservice-sdk";
+import { TaskTypeDeleteParamsValidator } from "../../validators/task-type-delete-params.validator";
 
 const publicTaskTypeAttributes = [
 	"id",
@@ -151,6 +152,7 @@ export class TaskTypeController extends BaseController {
 	@SuccessResponse(204, "Returns nothing")
 	@DescribeAction("task-type/delete")
 	@DescribeResource("TaskType", ({ params }) => Number(params.taskTypeId))
+	@ValidateFuncArgs(TaskTypeDeleteParamsValidator)
 	async delete(@Path() taskTypeId: number): Promise<void> {
 		const taskType = await this.taskTypeRepository.read(taskTypeId);
 

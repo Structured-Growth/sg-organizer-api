@@ -19,8 +19,8 @@ export class TasksRepository implements RepositoryInterface<Task, TaskSearchPara
 		const order = params.sort ? (params.sort.map((item) => item.split(":")) as any) : [["createdAt", "desc"]];
 
 		params.orgId && (where["orgId"] = params.orgId);
-		params.priority && (where["orgId"] = params.priority);
-		params.taskTypeId && (where["orgId"] = params.taskTypeId);
+		params.priority && (where["priority"] = params.priority);
+		params.taskTypeId && (where["taskTypeId"] = params.taskTypeId);
 		params.assignedAccountId && (where["assignedAccountId"] = { [Op.in]: params.assignedAccountId });
 		params.assignedUserId && (where["assignedUserId"] = { [Op.in]: params.assignedUserId });
 		params.assignedGroupId && (where["assignedGroupId"] = { [Op.in]: params.assignedGroupId });
