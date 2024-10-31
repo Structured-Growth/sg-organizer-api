@@ -48,7 +48,7 @@ describe("GET /api/v1/task-type", () => {
 			orgId: 49,
 			"title[0]": "Important",
 			"code[0]": randomCode,
-			"status[0]": "active",
+			status: "active",
 		});
 		assert.equal(statusCode, 200);
 		assert.equal(body.data[0].id, context.taskTypeId);

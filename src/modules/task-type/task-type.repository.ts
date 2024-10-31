@@ -21,7 +21,7 @@ export class TaskTypeRepository
 		const order = params.sort ? (params.sort.map((item) => item.split(":")) as any) : [["createdAt", "desc"]];
 
 		params.orgId && (where["orgId"] = params.orgId);
-		params.status && (where["status"] = { [Op.in]: params.status });
+		params.status && (where["status"] = params.status);
 		params.id && (where["id"] = { [Op.in]: params.id });
 
 		if (params.title?.length > 0) {

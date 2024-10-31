@@ -2,7 +2,7 @@ import { DefaultSearchParamsInterface } from "@structured-growth/microservice-sd
 import { TaskTypeAttributes } from "../../database/models/task-type";
 
 export interface TaskTypeSearchParamsInterface extends Omit<DefaultSearchParamsInterface, "accountId"> {
-	status?: TaskTypeAttributes["status"][];
+	status?: TaskTypeAttributes["status"];
 	title?: string[];
 	code?: string[];
 }
