@@ -16,6 +16,6 @@ export const TaskCreateParamsValidator = joi.object({
 		createdByUserId: joi.number().positive().required().label("Created by user Id"),
 		startDate: joi.date().iso().label("Start date"),
 		dueDate: joi.date().iso().label("Due date"),
-		status: joi.string().required().valid("to do", "progress", "done", "archive").label("Status"),
+		status: joi.string().required().valid("todo", "inprogress", "done", "archived").label("Status"),
 	}),
 });

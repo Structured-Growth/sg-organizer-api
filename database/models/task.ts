@@ -1,8 +1,21 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
 import { container, RegionEnum, DefaultModelInterface } from "@structured-growth/microservice-sdk";
 
+export enum TaskPriorityEnum {
+	LOW = "low",
+	MEDIUM = "medium",
+	HIGH = "high"
+}
+
+export enum TaskStatusEnum {
+	TODO = "todo",
+	IN_PROGRESS = "inprogress",
+	DONE = "done",
+	ARCHIVED = "archived"
+}
+
 export interface TaskAttributes extends Omit<DefaultModelInterface, "accountId"> {
-	priority: "low" | "medium" | "high";
+	priority: TaskPriorityEnum;
 	taskTypeId: number;
 	title: string;
 	taskDetail: string;
@@ -13,11 +26,12 @@ export interface TaskAttributes extends Omit<DefaultModelInterface, "accountId">
 	createdByUserId: number;
 	startDate?: Date;
 	dueDate?: Date;
-	status: "to do" | "progress" | "done" | "archive";
+	status: TaskStatusEnum;
 }
 
 export interface TaskCreationAttributes
-	extends Omit<TaskAttributes, "id" | "arn" | "createdAt" | "updatedAt" | "deletedAt"> {}
+	extends Omit<TaskAttributes, "id" | "arn" | "createdAt" | "updatedAt" | "deletedAt"> {
+}
 
 export interface TaskUpdateAttributes
 	extends Partial<
@@ -34,7 +48,8 @@ export interface TaskUpdateAttributes
 			| "dueDate"
 			| "status"
 		>
-	> {}
+	> {
+}
 
 @Table({
 	tableName: "tasks",
@@ -91,7 +106,7 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes> implemen
 
 	get arn(): string {
 		return [container.resolve("appPrefix"), this.region, this.orgId, this.createdByAccountId, `tasks/${this.id}`].join(
-			":"
+			":",
 		);
 	}
 }

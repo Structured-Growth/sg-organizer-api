@@ -15,7 +15,7 @@ export const TaskSearchParamsValidator = joi.object({
 			createdByUserId: joi.array().items(joi.number().positive().required()).label("Created by user Ids"),
 			startDate: joi.date().iso().label("Start date"),
 			dueDate: joi.date().iso().label("Due date"),
-			status: joi.string().valid("to do", "progress", "done", "archive").label("Status"),
+			status: joi.string().valid("todo", "inprogress", "done", "archived").label("Status"),
 			createdAtMin: joi.date().iso().label("Created at minimum"),
 			createdAtMax: joi.date().iso().label("Created at maximum"),
 		})
