@@ -7,7 +7,7 @@ export const TaskSearchParamsValidator = joi.object({
 			orgId: joi.number().positive().label("Organization ID"),
 			priority: joi.string().valid("low", "medium", "high").label("Priority"),
 			taskTypeId: joi.number().positive().label("Task type ID"),
-			title: joi.string().max(100).required().label("Title"),
+			title: joi.array().items(joi.string().max(100).required()).label("Title"),
 			assignedAccountId: joi.array().items(joi.number().positive().required()).label("Assigned account Ids"),
 			assignedUserId: joi.array().items(joi.number().positive().required()).label("Assigned user Ids"),
 			assignedGroupId: joi.array().items(joi.number().positive().required()).label("Assigned group Ids"),

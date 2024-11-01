@@ -73,7 +73,7 @@ describe("GET /api/v1/tasks", () => {
 			orgId: 49,
 			priority: "medium",
 			taskTypeId: 3,
-			title: "Must",
+			"title[]": "Must",
 			"assignedAccountId[0]": 1,
 			"assignedUserId[0]": 2,
 			"assignedGroupId[0]": 3,

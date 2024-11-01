@@ -29,7 +29,11 @@ export class TasksRepository implements RepositoryInterface<Task, TaskSearchPara
 		params.status && (where["status"] = params.status);
 		params.id && (where["id"] = { [Op.in]: params.id });
 
-		params.title && (where["title"] = { [Op.iLike]: params.title.replace(/\*/g, "%") });
+		if (params.title?.length > 0) {
+			where["title"] = {
+				[Op.or]: params.title.map((str) => ({ [Op.iLike]: str.replace(/\*/g, "%") })),
+			};
+		}
 
 		if (params.startDate) {
 			where["startDate"] = {
