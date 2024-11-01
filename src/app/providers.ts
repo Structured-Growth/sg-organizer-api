@@ -16,6 +16,10 @@ import {
 import { loadEnvironment } from "./load-environment";
 import { NotesRepository } from "../modules/notes/notes.repository";
 import { NotesService } from "../modules/notes/notes.service";
+import { TaskTypeRepository } from "../modules/task-type/task-type.repository";
+import { TaskTypeService } from "../modules/task-type/task-type.service";
+import { TasksRepository } from "../modules/tasks/tasks.repository";
+import { TasksService } from "../modules/tasks/tasks.service";
 
 // load and validate env variables
 loadEnvironment();
@@ -35,9 +39,13 @@ container.register("LogWriter", logWriters[process.env.LOG_WRITER] || "ConsoleLo
 	lifecycle: Lifecycle.Singleton,
 });
 container.register("NotesService", NotesService);
+container.register("TaskTypeService", TaskTypeService);
+container.register("TasksService", TasksService);
 
 // repositories
 container.register("NotesRepository", NotesRepository);
+container.register("TaskTypeRepository", TaskTypeRepository);
+container.register("TasksRepository", TasksRepository);
 
 container.register("Logger", Logger);
 container.register("App", App, { lifecycle: Lifecycle.Singleton });
