@@ -39,7 +39,7 @@ describe("PUT /api/v1/notes/:noteId", () => {
 	it("Should return validation error", async () => {
 		const { statusCode, body } = await server.put(`/v1/notes/${context.noteId}`).send({
 			note: 88,
-			status: "active",
+			status: "act",
 		});
 
 		assert.equal(statusCode, 422);

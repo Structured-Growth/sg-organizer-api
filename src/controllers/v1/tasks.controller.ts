@@ -1,0 +1,172 @@
+import { Get, Route, Tags, Queries, OperationId, SuccessResponse, Body, Post, Path, Put, Delete } from "tsoa";
+import {
+	autoInjectable,
+	BaseController,
+	DescribeAction,
+	DescribeResource,
+	inject,
+	NotFoundError,
+	SearchResultInterface,
+	ValidateFuncArgs,
+} from "@structured-growth/microservice-sdk";
+import { pick } from "lodash";
+import { TaskAttributes } from "../../../database/models/task";
+import { TasksRepository } from "../../modules/tasks/tasks.repository";
+import { TaskSearchParamsInterface } from "../../interfaces/task-search-params.interface";
+import { TaskCreateBodyInterface } from "../../interfaces/task-create-body.interface";
+import { TaskUpdateBodyInterface } from "../../interfaces/task-update-body.interface";
+import { TaskSearchParamsValidator } from "../../validators/task-search-params.validator";
+import { TaskCreateParamsValidator } from "../../validators/task-create-params.validator";
+import { TaskReadParamsValidator } from "../../validators/task-read-params.validator";
+import { TaskUpdateParamsValidator } from "../../validators/task-update-params.validator";
+import { TaskDeleteParamsValidator } from "../../validators/task-delete-params.validator";
+import { EventMutation } from "@structured-growth/microservice-sdk";
+
+export const publicTaskAttributes = [
+	"id",
+	"orgId",
+	"region",
+	"priority",
+	"taskTypeId",
+	"title",
+	"taskDetail",
+	"assignedAccountId",
+	"assignedUserId",
+	"assignedGroupId",
+	"createdByAccountId",
+	"createdByUserId",
+	"startDate",
+	"dueDate",
+	"status",
+	"createdAt",
+	"updatedAt",
+	"arn",
+] as const;
+type TaskKeys = (typeof publicTaskAttributes)[number];
+export type PublicTaskAttributes = Pick<TaskAttributes, TaskKeys>;
+
+@Route("v1/tasks")
+@Tags("Tasks")
+@autoInjectable()
+export class TasksController extends BaseController {
+	constructor(@inject("TasksRepository") private tasksRepository: TasksRepository) {
+		super();
+	}
+
+	/**
+	 * Search Tasks
+	 */
+	@OperationId("Search")
+	@Get("/")
+	@SuccessResponse(200, "Returns list of tasks")
+	@DescribeAction("tasks/search")
+	@DescribeResource("Organization", ({ query }) => Number(query.orgId))
+	@ValidateFuncArgs(TaskSearchParamsValidator)
+	async search(@Queries() query: TaskSearchParamsInterface): Promise<SearchResultInterface<PublicTaskAttributes>> {
+		const { data, ...result } = await this.tasksRepository.search(query);
+
+		return {
+			data: data.map((task) => ({
+				...(pick(task.toJSON(), publicTaskAttributes) as PublicTaskAttributes),
+				arn: task.arn,
+			})),
+			...result,
+		};
+	}
+
+	/**
+	 * Create Task
+	 */
+	@OperationId("Create")
+	@Post("/")
+	@SuccessResponse(201, "Returns created task")
+	@DescribeAction("tasks/create")
+	@ValidateFuncArgs(TaskCreateParamsValidator)
+	@DescribeResource("Organization", ({ query }) => Number(query.orgId))
+	async create(@Queries() query: {}, @Body() body: TaskCreateBodyInterface): Promise<PublicTaskAttributes> {
+		const task = await this.tasksRepository.create(body);
+		this.response.status(201);
+
+		await this.eventBus.publish(
+			new EventMutation(this.principal.arn, task.arn, `${this.appPrefix}:tasks/create`, JSON.stringify(body))
+		);
+
+		return {
+			...(pick(task.toJSON(), publicTaskAttributes) as PublicTaskAttributes),
+			arn: task.arn,
+		};
+	}
+
+	/**
+	 * Get Task
+	 */
+	@OperationId("Read")
+	@Get("/:taskId")
+	@SuccessResponse(200, "Returns task")
+	@DescribeAction("tasks/read")
+	@DescribeResource("Task", ({ params }) => Number(params.taskId))
+	@ValidateFuncArgs(TaskReadParamsValidator)
+	async get(@Path() taskId: number): Promise<PublicTaskAttributes> {
+		const task = await this.tasksRepository.read(taskId);
+
+		if (!task) {
+			throw new NotFoundError(`Task ${taskId} not found`);
+		}
+
+		return {
+			...(pick(task.toJSON(), publicTaskAttributes) as PublicTaskAttributes),
+			arn: task.arn,
+		};
+	}
+
+	/**
+	 * Update Task
+	 */
+	@OperationId("Update")
+	@Put("/:taskId")
+	@SuccessResponse(200, "Returns updated task")
+	@DescribeAction("tasks/update")
+	@DescribeResource("Task", ({ params }) => Number(params.taskId))
+	@ValidateFuncArgs(TaskUpdateParamsValidator)
+	async update(
+		@Path() taskId: number,
+		@Queries() query: {},
+		@Body() body: TaskUpdateBodyInterface
+	): Promise<PublicTaskAttributes> {
+		const task = await this.tasksRepository.update(taskId, body);
+
+		await this.eventBus.publish(
+			new EventMutation(this.principal.arn, task.arn, `${this.appPrefix}:tasks/update`, JSON.stringify(body))
+		);
+
+		return {
+			...(pick(task.toJSON(), publicTaskAttributes) as PublicTaskAttributes),
+			arn: task.arn,
+		};
+	}
+
+	/**
+	 * Mark Task as deleted. Will be permanently deleted in 90 days.
+	 */
+	@OperationId("Delete")
+	@Delete("/:taskId")
+	@SuccessResponse(204, "Returns nothing")
+	@DescribeAction("tasks/delete")
+	@DescribeResource("Task", ({ params }) => Number(params.taskId))
+	@ValidateFuncArgs(TaskDeleteParamsValidator)
+	async delete(@Path() taskId: number): Promise<void> {
+		const task = await this.tasksRepository.read(taskId);
+
+		if (!task) {
+			throw new NotFoundError(`Task ${taskId} not found`);
+		}
+
+		await this.tasksRepository.delete(taskId);
+
+		await this.eventBus.publish(
+			new EventMutation(this.principal.arn, task.arn, `${this.appPrefix}:tasks/delete`, JSON.stringify({}))
+		);
+
+		this.response.status(204);
+	}
+}
