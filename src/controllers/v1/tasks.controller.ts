@@ -28,6 +28,7 @@ export const publicTaskAttributes = [
 	"region",
 	"priority",
 	"taskTypeId",
+	"title",
 	"taskDetail",
 	"assignedAccountId",
 	"assignedUserId",

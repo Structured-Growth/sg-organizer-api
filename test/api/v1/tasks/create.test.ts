@@ -11,6 +11,7 @@ describe("POST /api/v1/tasks", () => {
 			region: "us",
 			priority: "medium",
 			taskTypeId: 3,
+			title: "Must",
 			taskDetail: "You must do this",
 			assignedAccountId: 1,
 			assignedUserId: 2,
@@ -27,6 +28,7 @@ describe("POST /api/v1/tasks", () => {
 		assert.equal(body.region, "us");
 		assert.equal(body.priority, "medium");
 		assert.equal(body.taskTypeId, 3);
+		assert.equal(body.title, "Must");
 		assert.equal(body.taskDetail, "You must do this");
 		assert.equal(body.assignedAccountId, 1);
 		assert.equal(body.assignedUserId, 2);
@@ -47,6 +49,7 @@ describe("POST /api/v1/tasks", () => {
 			region: 25,
 			priority: "no",
 			taskTypeId: "taskTypeId",
+			title: 37,
 			taskDetail: 25,
 			assignedAccountId: "assignedAccountId",
 			assignedUserId: "assignedUserId",
@@ -66,6 +69,7 @@ describe("POST /api/v1/tasks", () => {
 		assert.isString(body.validation.body.region[0]);
 		assert.isString(body.validation.body.priority[0]);
 		assert.isString(body.validation.body.taskTypeId[0]);
+		assert.isString(body.validation.body.title[0]);
 		assert.isString(body.validation.body.taskDetail[0]);
 		assert.isString(body.validation.body.assignedAccountId[0]);
 		assert.isString(body.validation.body.assignedUserId[0]);

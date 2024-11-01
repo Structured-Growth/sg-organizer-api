@@ -6,6 +6,7 @@ export const TaskUpdateParamsValidator = joi.object({
 	body: joi.object({
 		priority: joi.string().valid("low", "medium", "high").label("Priority"),
 		taskTypeId: joi.number().positive().label("Task Type Id"),
+		title: joi.string().max(100).label("Title"),
 		taskDetail: joi.string().max(255).label("Task detail"),
 		assignedAccountId: joi.number().positive().label("Assigned account Id"),
 		assignedUserId: joi.number().positive().label("Assigned user Id"),

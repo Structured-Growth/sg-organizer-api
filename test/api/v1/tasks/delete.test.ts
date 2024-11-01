@@ -11,6 +11,7 @@ describe("DELETE /api/v1/tasks/:taskId", () => {
 			region: "us",
 			priority: "medium",
 			taskTypeId: 3,
+			title: "Must",
 			taskDetail: "You must do this",
 			assignedAccountId: 1,
 			assignedUserId: 2,

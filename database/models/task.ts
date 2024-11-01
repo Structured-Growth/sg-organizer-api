@@ -4,6 +4,7 @@ import { container, RegionEnum, DefaultModelInterface } from "@structured-growth
 export interface TaskAttributes extends Omit<DefaultModelInterface, "accountId"> {
 	priority: "low" | "medium" | "high";
 	taskTypeId: number;
+	title: string;
 	taskDetail: string;
 	assignedAccountId?: number;
 	assignedUserId?: number;
@@ -24,6 +25,7 @@ export interface TaskUpdateAttributes
 			TaskCreationAttributes,
 			| "priority"
 			| "taskTypeId"
+			| "title"
 			| "taskDetail"
 			| "assignedAccountId"
 			| "assignedUserId"
@@ -52,6 +54,9 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes> implemen
 
 	@Column
 	taskTypeId: number;
+
+	@Column
+	title: string;
 
 	@Column
 	taskDetail: string;

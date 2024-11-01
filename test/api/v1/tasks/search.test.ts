@@ -11,6 +11,7 @@ describe("GET /api/v1/tasks", () => {
 			region: "us",
 			priority: "medium",
 			taskTypeId: 3,
+			title: "Must",
 			taskDetail: "You must do this",
 			assignedAccountId: 1,
 			assignedUserId: 2,
@@ -31,6 +32,8 @@ describe("GET /api/v1/tasks", () => {
 			orgId: "a",
 			priority: "no",
 			taskTypeId: "taskTypeId",
+			title:
+				"Add a feature to display a loading spinner while data is being fetched, ensuring a smooth user experience.",
 			assignedAccountId: "assignedAccountId",
 			assignedUserId: "assignedUserId",
 			assignedGroupId: "assignedGroupId",
@@ -53,6 +56,7 @@ describe("GET /api/v1/tasks", () => {
 		assert.isString(body.validation.query.priority[0]);
 		assert.isString(body.validation.query.arn[0]);
 		assert.isString(body.validation.query.taskTypeId[0]);
+		assert.isString(body.validation.query.title[0]);
 		assert.isString(body.validation.query.assignedAccountId[0]);
 		assert.isString(body.validation.query.assignedUserId[0]);
 		assert.isString(body.validation.query.assignedGroupId[0]);
@@ -69,6 +73,7 @@ describe("GET /api/v1/tasks", () => {
 			orgId: 49,
 			priority: "medium",
 			taskTypeId: 3,
+			title: "Must",
 			"assignedAccountId[0]": 1,
 			"assignedUserId[0]": 2,
 			"assignedGroupId[0]": 3,
@@ -84,6 +89,7 @@ describe("GET /api/v1/tasks", () => {
 		assert.equal(body.data[0].orgId, 49);
 		assert.equal(body.data[0].priority, "medium");
 		assert.equal(body.data[0].taskTypeId, 3);
+		assert.equal(body.data[0].title, "Must");
 		assert.equal(body.data[0].assignedAccountId, 1);
 		assert.equal(body.data[0].assignedUserId, 2);
 		assert.equal(body.data[0].assignedGroupId, 3);

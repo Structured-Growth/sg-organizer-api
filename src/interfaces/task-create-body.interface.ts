@@ -5,6 +5,7 @@ export interface TaskCreateBodyInterface {
 	region: RegionEnum;
 	priority: TaskAttributes["priority"];
 	taskTypeId: number;
+	title: string;
 	taskDetail: string;
 	assignedAccountId?: number;
 	assignedUserId?: number;

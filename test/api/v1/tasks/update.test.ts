@@ -11,6 +11,7 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 			region: "us",
 			priority: "medium",
 			taskTypeId: 3,
+			title: "Must",
 			taskDetail: "You must do this",
 			assignedAccountId: 1,
 			assignedUserId: 2,
@@ -30,6 +31,7 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 		const { statusCode, body } = await server.put(`/v1/tasks/${context.taskId}`).send({
 			priority: "low",
 			taskTypeId: 8,
+			title: "Must today",
 			taskDetail: "You must do this today",
 			assignedAccountId: 11,
 			assignedUserId: 21,
@@ -42,6 +44,7 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 		assert.equal(body.id, context.taskId);
 		assert.equal(body.orgId, 49);
 		assert.equal(body.taskTypeId, 8);
+		assert.equal(body.title, "Must today");
 		assert.equal(body.taskDetail, "You must do this today");
 		assert.equal(body.assignedAccountId, 11);
 		assert.equal(body.assignedUserId, 21);
@@ -56,6 +59,7 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 		const { statusCode, body } = await server.put(`/v1/tasks/${context.taskId}`).send({
 			priority: "lowest",
 			taskTypeId: "taskTypeId",
+			title: 26,
 			taskDetail: 25,
 			assignedAccountId: "assignedAccountId",
 			assignedUserId: "assignedUserId",
@@ -71,6 +75,7 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 		assert.isString(body.message);
 		assert.isString(body.validation.body.priority[0]);
 		assert.isString(body.validation.body.taskTypeId[0]);
+		assert.isString(body.validation.body.title[0]);
 		assert.isString(body.validation.body.taskDetail[0]);
 		assert.isString(body.validation.body.assignedAccountId[0]);
 		assert.isString(body.validation.body.assignedUserId[0]);
