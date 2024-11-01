@@ -20,7 +20,7 @@ describe("GET /api/v1/tasks", () => {
 			createdByUserId: 5,
 			startDate: "2024-11-01T08:00:00Z",
 			dueDate: "2024-11-15T17:00:00Z",
-			status: "progress",
+			status: "inprogress",
 		});
 		assert.equal(statusCode, 201);
 		assert.isNumber(body.id);
@@ -79,7 +79,7 @@ describe("GET /api/v1/tasks", () => {
 			"assignedGroupId[0]": 3,
 			"createdByAccountId[0]": 4,
 			"createdByUserId[0]": 5,
-			status: "progress",
+			status: "inprogress",
 		});
 
 		console.log("Data: ", body);
@@ -97,7 +97,7 @@ describe("GET /api/v1/tasks", () => {
 		assert.equal(body.data[0].createdByUserId, 5);
 		assert.isString(body.data[0].createdAt);
 		assert.isString(body.data[0].updatedAt);
-		assert.equal(body.data[0].status, "progress");
+		assert.equal(body.data[0].status, "inprogress");
 		assert.isString(body.data[0].arn);
 		assert.equal(body.page, 1);
 		assert.equal(body.limit, 20);

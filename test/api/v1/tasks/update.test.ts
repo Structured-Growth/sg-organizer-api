@@ -20,7 +20,7 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 			createdByUserId: 5,
 			startDate: "2024-11-01T08:00:00Z",
 			dueDate: "2024-11-15T17:00:00Z",
-			status: "progress",
+			status: "inprogress",
 		});
 		assert.equal(statusCode, 201);
 		assert.isNumber(body.id);

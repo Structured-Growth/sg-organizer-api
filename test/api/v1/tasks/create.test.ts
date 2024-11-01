@@ -20,7 +20,7 @@ describe("POST /api/v1/tasks", () => {
 			createdByUserId: 5,
 			startDate: "2024-11-01T08:00:00Z",
 			dueDate: "2024-11-15T17:00:00Z",
-			status: "progress",
+			status: "inprogress",
 		});
 		assert.equal(statusCode, 201);
 		assert.isNumber(body.id);
@@ -39,7 +39,7 @@ describe("POST /api/v1/tasks", () => {
 		assert.isNotNaN(new Date(body.dueDate).getTime());
 		assert.isNotNaN(new Date(body.createdAt).getTime());
 		assert.isNotNaN(new Date(body.updatedAt).getTime());
-		assert.equal(body.status, "progress");
+		assert.equal(body.status, "inprogress");
 		assert.isString(body.arn);
 	});
 

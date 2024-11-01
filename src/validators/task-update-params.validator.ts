@@ -13,6 +13,6 @@ export const TaskUpdateParamsValidator = joi.object({
 		assignedGroupId: joi.number().positive().label("Assigned Group Id"),
 		startDate: joi.date().iso().label("Start date"),
 		dueDate: joi.date().iso().label("Due date"),
-		status: joi.string().valid("to do", "progress", "done", "archive").label("Status"),
+		status: joi.string().valid("todo", "inprogress", "done", "archived").label("Status"),
 	}),
 });
