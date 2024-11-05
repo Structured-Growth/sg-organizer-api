@@ -5,10 +5,10 @@ export interface TaskUpdateBodyInterface {
 	taskTypeId?: number;
 	title?: string;
 	taskDetail?: string;
-	assignedAccountId?: number;
-	assignedUserId?: number;
-	assignedGroupId?: number;
+	assignedAccountId?: number[];
+	assignedGroupId?: number[];
 	startDate?: Date;
 	dueDate?: Date;
 	status?: TaskAttributes["status"];
+	metadata?: object;
 }
