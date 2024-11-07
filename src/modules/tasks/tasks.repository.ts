@@ -11,7 +11,11 @@ import { TaskSearchParamsInterface } from "../../interfaces/task-search-params.i
 
 @autoInjectable()
 export class TasksRepository implements RepositoryInterface<Task, TaskSearchParamsInterface, TaskCreationAttributes> {
-	public async search(params: TaskSearchParamsInterface): Promise<SearchResultInterface<Task>> {
+	public async search(
+		params: TaskSearchParamsInterface & {
+			metadata?: Record<string, string | number>;
+		}
+	): Promise<SearchResultInterface<Task>> {
 		const page = params.page || 1;
 		let limit = params.limit || 20;
 		let offset = (page - 1) * limit;
@@ -21,11 +25,9 @@ export class TasksRepository implements RepositoryInterface<Task, TaskSearchPara
 		params.orgId && (where["orgId"] = params.orgId);
 		params.priority && (where["priority"] = params.priority);
 		params.taskTypeId && (where["taskTypeId"] = params.taskTypeId);
-		params.assignedAccountId && (where["assignedAccountId"] = { [Op.in]: params.assignedAccountId });
-		params.assignedUserId && (where["assignedUserId"] = { [Op.in]: params.assignedUserId });
-		params.assignedGroupId && (where["assignedGroupId"] = { [Op.in]: params.assignedGroupId });
+		params.assignedAccountId && (where["assignedAccountId"] = { [Op.overlap]: params.assignedAccountId });
+		params.assignedGroupId && (where["assignedGroupId"] = { [Op.contains]: params.assignedGroupId });
 		params.createdByAccountId && (where["createdByAccountId"] = { [Op.in]: params.createdByAccountId });
-		params.createdByUserId && (where["createdByUserId"] = { [Op.in]: params.createdByUserId });
 		params.status && (where["status"] = params.status);
 		params.id && (where["id"] = { [Op.in]: params.id });
 
@@ -47,14 +49,19 @@ export class TasksRepository implements RepositoryInterface<Task, TaskSearchPara
 			};
 		}
 
-		(params.createdAtMin || params.createdAtMax) &&
-			(where["createdAt"] = omitBy(
+		if (params.createdAtMin || params.createdAtMax) {
+			where["createdAt"] = omitBy(
 				{
 					[Op.gte]: params.createdAtMin,
 					[Op.lte]: params.createdAtMax,
 				},
 				isUndefined
-			));
+			);
+		}
+
+		if (params.metadata) {
+			where["metadata"] = params.metadata;
+		}
 
 		const { rows, count } = await Task.findAndCountAll({
 			where,

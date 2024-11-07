@@ -13,11 +13,9 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 			taskTypeId: 3,
 			title: "Must",
 			taskDetail: "You must do this",
-			assignedAccountId: 1,
-			assignedUserId: 2,
-			assignedGroupId: 3,
+			assignedAccountId: [1],
+			assignedGroupId: [3],
 			createdByAccountId: 4,
-			createdByUserId: 5,
 			startDate: "2024-11-01T08:00:00Z",
 			dueDate: "2024-11-15T17:00:00Z",
 			status: "inprogress",
@@ -33,9 +31,8 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 			taskTypeId: 8,
 			title: "Must today",
 			taskDetail: "You must do this today",
-			assignedAccountId: 11,
-			assignedUserId: 21,
-			assignedGroupId: 31,
+			assignedAccountId: [1, 11],
+			assignedGroupId: [3, 31],
 			startDate: "2024-12-01T08:00:00Z",
 			dueDate: "2024-12-15T17:00:00Z",
 			status: "done",
@@ -46,9 +43,8 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 		assert.equal(body.taskTypeId, 8);
 		assert.equal(body.title, "Must today");
 		assert.equal(body.taskDetail, "You must do this today");
-		assert.equal(body.assignedAccountId, 11);
-		assert.equal(body.assignedUserId, 21);
-		assert.equal(body.assignedGroupId, 31);
+		assert.deepEqual(body.assignedAccountId, [1, 11]);
+		assert.deepEqual(body.assignedGroupId, [3, 31]);
 		assert.isString(body.createdAt);
 		assert.isString(body.updatedAt);
 		assert.equal(body.status, "done");
@@ -62,7 +58,6 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 			title: 26,
 			taskDetail: 25,
 			assignedAccountId: "assignedAccountId",
-			assignedUserId: "assignedUserId",
 			assignedGroupId: "assignedGroupId",
 			startDate: 31,
 			dueDate: 32,
@@ -78,7 +73,6 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 		assert.isString(body.validation.body.title[0]);
 		assert.isString(body.validation.body.taskDetail[0]);
 		assert.isString(body.validation.body.assignedAccountId[0]);
-		assert.isString(body.validation.body.assignedUserId[0]);
 		assert.isString(body.validation.body.assignedGroupId[0]);
 		assert.isString(body.validation.body.startDate[0]);
 		assert.isString(body.validation.body.dueDate[0]);

@@ -13,11 +13,9 @@ describe("GET /api/v1/tasks/:taskId", () => {
 			taskTypeId: 3,
 			title: "Must",
 			taskDetail: "You must do this",
-			assignedAccountId: 1,
-			assignedUserId: 2,
-			assignedGroupId: 3,
+			assignedAccountId: [1],
+			assignedGroupId: [3],
 			createdByAccountId: 4,
-			createdByUserId: 5,
 			startDate: "2024-11-01T08:00:00Z",
 			dueDate: "2024-11-15T17:00:00Z",
 			status: "inprogress",
@@ -36,11 +34,9 @@ describe("GET /api/v1/tasks/:taskId", () => {
 		assert.equal(body.taskTypeId, 3);
 		assert.equal(body.title, "Must");
 		assert.equal(body.taskDetail, "You must do this");
-		assert.equal(body.assignedAccountId, 1);
-		assert.equal(body.assignedUserId, 2);
-		assert.equal(body.assignedGroupId, 3);
+		assert.deepEqual(body.assignedAccountId, [1]);
+		assert.deepEqual(body.assignedGroupId, [3]);
 		assert.equal(body.createdByAccountId, 4);
-		assert.equal(body.createdByUserId, 5);
 		assert.isString(body.startDate);
 		assert.isString(body.dueDate);
 		assert.isString(body.createdAt);

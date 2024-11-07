@@ -16,4 +16,5 @@ export interface TaskSearchParamsInterface extends Omit<DefaultSearchParamsInter
 	status?: TaskAttributes["status"];
 	createdAtMin?: Date;
 	createdAtMax?: Date;
+	"metadata[customFieldName]"?: string;
 }

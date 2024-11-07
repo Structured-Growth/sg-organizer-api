@@ -7,12 +7,11 @@ export interface TaskCreateBodyInterface {
 	taskTypeId: number;
 	title: string;
 	taskDetail: string;
-	assignedAccountId?: number;
-	assignedUserId?: number;
-	assignedGroupId?: number;
+	assignedAccountId?: number[];
+	assignedGroupId?: number[];
 	createdByAccountId: number;
-	createdByUserId: number;
 	startDate?: Date;
 	dueDate?: Date;
 	status: TaskAttributes["status"];
+	metadata?: object;
 }
