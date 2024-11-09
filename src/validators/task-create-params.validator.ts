@@ -11,7 +11,7 @@ export const TaskCreateParamsValidator = joi.object({
 		taskDetail: joi.string().max(255).required().label("Task detail"),
 		assignedAccountId: joi.array().items(joi.number().positive()).label("Assigned account Ids"),
 		assignedGroupId: joi.array().items(joi.number().positive()).label("Assigned Group Ids"),
-		createdByAccountId: joi.number().positive().required().label("Created by account Id"),
+		createdByAccountId: joi.number().positive().label("Created by account Id"),
 		startDate: joi.date().iso().label("Start date"),
 		dueDate: joi.date().iso().label("Due date"),
 		status: joi.string().required().valid("todo", "inprogress", "done", "archived").label("Status"),

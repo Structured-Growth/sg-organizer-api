@@ -21,7 +21,7 @@ export interface TaskAttributes extends Omit<DefaultModelInterface, "accountId">
 	taskDetail: string;
 	assignedAccountId?: number[];
 	assignedGroupId?: number[];
-	createdByAccountId: number;
+	createdByAccountId?: number;
 	startDate?: Date;
 	dueDate?: Date;
 	status: TaskStatusEnum;
