@@ -1,5 +1,6 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, Model, Table, ForeignKey, BelongsTo } from "sequelize-typescript";
 import { container, RegionEnum, DefaultModelInterface } from "@structured-growth/microservice-sdk";
+import TaskType from "./task-type";
 
 export enum TaskPriorityEnum {
 	LOW = "low",
@@ -17,6 +18,7 @@ export enum TaskStatusEnum {
 export interface TaskAttributes extends Omit<DefaultModelInterface, "accountId"> {
 	priority: TaskPriorityEnum;
 	taskTypeId: number;
+	taskTypeCode: string;
 	title: string;
 	taskDetail: string;
 	assignedAccountId?: number[];
@@ -37,6 +39,7 @@ export interface TaskUpdateAttributes
 			TaskCreationAttributes,
 			| "priority"
 			| "taskTypeId"
+			| "taskTypeCode"
 			| "title"
 			| "taskDetail"
 			| "assignedAccountId"
@@ -65,7 +68,14 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes> implemen
 	priority: TaskAttributes["priority"];
 
 	@Column
+	@ForeignKey(() => TaskType)
 	taskTypeId: number;
+
+	@BelongsTo(() => TaskType)
+	taskType: TaskType;
+
+	@Column
+	taskTypeCode: string;
 
 	@Column
 	title: string;

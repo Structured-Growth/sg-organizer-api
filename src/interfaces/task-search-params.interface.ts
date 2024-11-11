@@ -5,6 +5,7 @@ export interface TaskSearchParamsInterface extends Omit<DefaultSearchParamsInter
 	orgId?: number;
 	priority?: TaskAttributes["priority"];
 	taskTypeId?: number;
+	taskTypeCode?: string[];
 	title?: string[];
 	assignedAccountId?: number[];
 	assignedUserId?: number[];

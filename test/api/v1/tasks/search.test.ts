@@ -4,13 +4,28 @@ import { initTest } from "../../../common/init-test";
 
 describe("GET /api/v1/tasks", () => {
 	const { server, context } = initTest();
+	const randomCode = `important${Math.floor(Math.random() * 100000)}`;
+
+	it("Should create task type", async () => {
+		const { statusCode, body } = await server.post("/v1/task-type").send({
+			orgId: 49,
+			region: "us",
+			title: "Important",
+			code: randomCode,
+			status: "active",
+		});
+		assert.equal(statusCode, 201);
+		assert.isNumber(body.id);
+		context["taskTypeId"] = body.id;
+	});
 
 	it("Should create task", async () => {
 		const { statusCode, body } = await server.post("/v1/tasks").send({
 			orgId: 49,
 			region: "us",
 			priority: "medium",
-			taskTypeId: 3,
+			taskTypeId: context.taskTypeId,
+			taskTypeCode: "must",
 			title: "Must",
 			taskDetail: "You must do this",
 			assignedAccountId: [1],
@@ -30,6 +45,8 @@ describe("GET /api/v1/tasks", () => {
 			orgId: "a",
 			priority: "no",
 			taskTypeId: "taskTypeId",
+			taskTypeCode:
+				"Add a feature to display a loading spinner while data is being fetched, ensuring a smooth user experience.",
 			title:
 				"Add a feature to display a loading spinner while data is being fetched, ensuring a smooth user experience.",
 			assignedAccountId: "assignedAccountId",
@@ -52,6 +69,7 @@ describe("GET /api/v1/tasks", () => {
 		assert.isString(body.validation.query.priority[0]);
 		assert.isString(body.validation.query.arn[0]);
 		assert.isString(body.validation.query.taskTypeId[0]);
+		assert.isString(body.validation.query.taskTypeCode[0]);
 		assert.isString(body.validation.query.title[0]);
 		assert.isString(body.validation.query.assignedAccountId[0]);
 		assert.isString(body.validation.query.assignedGroupId[0]);
@@ -66,7 +84,8 @@ describe("GET /api/v1/tasks", () => {
 			"id[0]": context.taskId,
 			orgId: 49,
 			priority: "medium",
-			taskTypeId: 3,
+			taskTypeId: context.taskTypeId,
+			"taskTypeCode[]": "must",
 			"title[]": "Must",
 			"assignedAccountId[0]": 1,
 			"assignedGroupId[0]": 3,
@@ -78,7 +97,8 @@ describe("GET /api/v1/tasks", () => {
 		assert.equal(body.data[0].id, context.taskId);
 		assert.equal(body.data[0].orgId, 49);
 		assert.equal(body.data[0].priority, "medium");
-		assert.equal(body.data[0].taskTypeId, 3);
+		assert.equal(body.data[0].taskTypeId, context.taskTypeId);
+		assert.equal(body.data[0].taskTypeCode, "must");
 		assert.equal(body.data[0].title, "Must");
 		assert.deepEqual(body.data[0]?.assignedAccountId, [1]);
 		assert.deepEqual(body.data[0]?.assignedGroupId, [3]);

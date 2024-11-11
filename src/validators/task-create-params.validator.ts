@@ -7,6 +7,7 @@ export const TaskCreateParamsValidator = joi.object({
 		region: joi.string().required().min(2).max(10).label("Region"),
 		priority: joi.string().required().valid("low", "medium", "high").label("Priority"),
 		taskTypeId: joi.number().positive().required().label("Task Type Id"),
+		taskTypeCode: joi.string().max(100).required().label("Task Type Code"),
 		title: joi.string().max(100).required().label("Title"),
 		taskDetail: joi.string().max(255).required().label("Task detail"),
 		assignedAccountId: joi.array().items(joi.number().positive()).label("Assigned account Ids"),
