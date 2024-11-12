@@ -4,13 +4,27 @@ import { initTest } from "../../../common/init-test";
 
 describe("GET /api/v1/tasks/:taskId", () => {
 	const { server, context } = initTest();
+	const randomCode = `important${Math.floor(Math.random() * 100000)}`;
+
+	it("Should create task type", async () => {
+		const { statusCode, body } = await server.post("/v1/task-type").send({
+			orgId: 49,
+			region: "us",
+			title: "Important",
+			code: randomCode,
+			status: "active",
+		});
+		assert.equal(statusCode, 201);
+		assert.isNumber(body.id);
+		context["taskTypeId"] = body.id;
+	});
 
 	it("Should create task", async () => {
 		const { statusCode, body } = await server.post("/v1/tasks").send({
 			orgId: 49,
 			region: "us",
 			priority: "medium",
-			taskTypeId: 3,
+			taskTypeId: context.taskTypeId,
 			title: "Must",
 			taskDetail: "You must do this",
 			assignedAccountId: [1],
@@ -31,7 +45,7 @@ describe("GET /api/v1/tasks/:taskId", () => {
 		assert.equal(body.id, context.taskId);
 		assert.equal(body.orgId, 49);
 		assert.equal(body.priority, "medium");
-		assert.equal(body.taskTypeId, 3);
+		assert.equal(body.taskTypeId, context.taskTypeId);
 		assert.equal(body.title, "Must");
 		assert.equal(body.taskDetail, "You must do this");
 		assert.deepEqual(body.assignedAccountId, [1]);

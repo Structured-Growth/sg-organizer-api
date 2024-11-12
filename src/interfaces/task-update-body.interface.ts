@@ -3,6 +3,7 @@ import { TaskAttributes } from "../../database/models/task";
 export interface TaskUpdateBodyInterface {
 	priority?: TaskAttributes["priority"];
 	taskTypeId?: number;
+	taskTypeCode?: string;
 	title?: string;
 	taskDetail?: string;
 	assignedAccountId?: number[];

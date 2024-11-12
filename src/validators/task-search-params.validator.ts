@@ -4,9 +4,10 @@ import { CommonSearchParamsValidator } from "./common-search-params.validator";
 export const TaskSearchParamsValidator = joi.object({
 	query: joi
 		.object({
-			orgId: joi.number().positive().label("Organization ID"),
+			orgId: joi.number().positive().required().label("Organization ID"),
 			priority: joi.string().valid("low", "medium", "high").label("Priority"),
 			taskTypeId: joi.number().positive().label("Task type ID"),
+			taskTypeCode: joi.string().max(100).label("Task Type Code"),
 			title: joi.array().items(joi.string().max(100).required()).label("Title"),
 			assignedAccountId: joi.array().items(joi.number().positive().required()).label("Assigned account Ids"),
 			assignedGroupId: joi.array().items(joi.number().positive().required()).label("Assigned group Ids"),
