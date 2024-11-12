@@ -25,7 +25,6 @@ describe("DELETE /api/v1/tasks/:taskId", () => {
 			region: "us",
 			priority: "medium",
 			taskTypeId: context.taskTypeId,
-			taskTypeCode: "must",
 			title: "Must",
 			taskDetail: "You must do this",
 			assignedAccountId: [1],

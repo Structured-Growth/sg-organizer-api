@@ -2,10 +2,10 @@ import { DefaultSearchParamsInterface } from "@structured-growth/microservice-sd
 import { TaskAttributes } from "../../database/models/task";
 
 export interface TaskSearchParamsInterface extends Omit<DefaultSearchParamsInterface, "accountId" | "orgId"> {
-	orgId?: number;
+	orgId: number;
 	priority?: TaskAttributes["priority"];
 	taskTypeId?: number;
-	taskTypeCode?: string[];
+	taskTypeCode?: string;
 	title?: string[];
 	assignedAccountId?: number[];
 	assignedUserId?: number[];

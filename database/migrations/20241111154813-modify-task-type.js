@@ -14,11 +14,6 @@ module.exports = {
 			},
 			onDelete: "RESTRICT",
 		});
-
-		await queryInterface.addColumn({ schema: process.env.DB_SCHEMA, tableName: "tasks" }, "task_type_code", {
-			type: Sequelize.STRING(100),
-			allowNull: false,
-		});
 	},
 
 	async down(queryInterface) {
@@ -26,7 +21,5 @@ module.exports = {
 			type: Sequelize.SMALLINT,
 			allowNull: false,
 		});
-
-		await queryInterface.removeColumn({ schema: process.env.DB_SCHEMA, tableName: "tasks" }, "task_type_code");
 	},
 };

@@ -29,7 +29,6 @@ export const publicTaskAttributes = [
 	"region",
 	"priority",
 	"taskTypeId",
-	"taskTypeCode",
 	"title",
 	"taskDetail",
 	"assignedAccountId",
@@ -67,7 +66,7 @@ export class TasksController extends BaseController {
 	@DescribeResource("Organization", ({ query }) => Number(query.orgId))
 	@ValidateFuncArgs(TaskSearchParamsValidator)
 	async search(@Queries() query: TaskSearchParamsInterface): Promise<SearchResultInterface<PublicTaskAttributes>> {
-		const { data, ...result } = await this.tasksRepository.search(query);
+		const { data, ...result } = await this.tasksService.search(query);
 
 		return {
 			data: data.map((task) => ({

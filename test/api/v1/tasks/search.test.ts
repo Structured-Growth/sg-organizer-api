@@ -25,7 +25,6 @@ describe("GET /api/v1/tasks", () => {
 			region: "us",
 			priority: "medium",
 			taskTypeId: context.taskTypeId,
-			taskTypeCode: "must",
 			title: "Must",
 			taskDetail: "You must do this",
 			assignedAccountId: [1],
@@ -85,7 +84,7 @@ describe("GET /api/v1/tasks", () => {
 			orgId: 49,
 			priority: "medium",
 			taskTypeId: context.taskTypeId,
-			"taskTypeCode[]": "must",
+			taskTypeCode: randomCode,
 			"title[]": "Must",
 			"assignedAccountId[0]": 1,
 			"assignedGroupId[0]": 3,
@@ -98,7 +97,6 @@ describe("GET /api/v1/tasks", () => {
 		assert.equal(body.data[0].orgId, 49);
 		assert.equal(body.data[0].priority, "medium");
 		assert.equal(body.data[0].taskTypeId, context.taskTypeId);
-		assert.equal(body.data[0].taskTypeCode, "must");
 		assert.equal(body.data[0].title, "Must");
 		assert.deepEqual(body.data[0]?.assignedAccountId, [1]);
 		assert.deepEqual(body.data[0]?.assignedGroupId, [3]);

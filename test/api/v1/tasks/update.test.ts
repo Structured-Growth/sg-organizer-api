@@ -39,7 +39,6 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 			region: "us",
 			priority: "medium",
 			taskTypeId: context.taskTypeId,
-			taskTypeCode: "must",
 			title: "Must",
 			taskDetail: "You must do this",
 			assignedAccountId: [1],
@@ -58,7 +57,7 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 		const { statusCode, body } = await server.put(`/v1/tasks/${context.taskId}`).send({
 			priority: "low",
 			taskTypeId: context.taskTypeIdForUpdate,
-			taskTypeCode: "must_today",
+			taskTypeCode: randomCodeUpdate,
 			title: "Must today",
 			taskDetail: "You must do this today",
 			assignedAccountId: [1, 11],
@@ -71,7 +70,6 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 		assert.equal(body.id, context.taskId);
 		assert.equal(body.orgId, 49);
 		assert.equal(body.taskTypeId, context.taskTypeIdForUpdate);
-		assert.equal(body.taskTypeCode, "must_today");
 		assert.equal(body.title, "Must today");
 		assert.equal(body.taskDetail, "You must do this today");
 		assert.deepEqual(body.assignedAccountId, [1, 11]);
@@ -86,7 +84,8 @@ describe("PUT /api/v1/tasks/:taskId", () => {
 		const { statusCode, body } = await server.put(`/v1/tasks/${context.taskId}`).send({
 			priority: "lowest",
 			taskTypeId: "taskTypeId",
-			taskTypeCode: 27,
+			taskTypeCode:
+				"Add a feature to display a loading spinner while data is being fetched, ensuring a smooth user experience.",
 			title: 26,
 			taskDetail: 25,
 			assignedAccountId: "assignedAccountId",

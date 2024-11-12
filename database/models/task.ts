@@ -18,7 +18,6 @@ export enum TaskStatusEnum {
 export interface TaskAttributes extends Omit<DefaultModelInterface, "accountId"> {
 	priority: TaskPriorityEnum;
 	taskTypeId: number;
-	taskTypeCode: string;
 	title: string;
 	taskDetail: string;
 	assignedAccountId?: number[];
@@ -39,7 +38,6 @@ export interface TaskUpdateAttributes
 			TaskCreationAttributes,
 			| "priority"
 			| "taskTypeId"
-			| "taskTypeCode"
 			| "title"
 			| "taskDetail"
 			| "assignedAccountId"
@@ -73,9 +71,6 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes> implemen
 
 	@BelongsTo(() => TaskType)
 	taskType: TaskType;
-
-	@Column
-	taskTypeCode: string;
 
 	@Column
 	title: string;
