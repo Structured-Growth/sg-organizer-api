@@ -1,17 +1,18 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, Model, Table, ForeignKey, BelongsTo } from "sequelize-typescript";
 import { container, RegionEnum, DefaultModelInterface } from "@structured-growth/microservice-sdk";
+import TaskType from "./task-type";
 
 export enum TaskPriorityEnum {
 	LOW = "low",
 	MEDIUM = "medium",
-	HIGH = "high"
+	HIGH = "high",
 }
 
 export enum TaskStatusEnum {
 	TODO = "todo",
 	IN_PROGRESS = "inprogress",
 	DONE = "done",
-	ARCHIVED = "archived"
+	ARCHIVED = "archived",
 }
 
 export interface TaskAttributes extends Omit<DefaultModelInterface, "accountId"> {
@@ -19,19 +20,17 @@ export interface TaskAttributes extends Omit<DefaultModelInterface, "accountId">
 	taskTypeId: number;
 	title: string;
 	taskDetail: string;
-	assignedAccountId?: number;
-	assignedUserId?: number;
-	assignedGroupId?: number;
-	createdByAccountId: number;
-	createdByUserId: number;
+	assignedAccountId?: number[];
+	assignedGroupId?: number[];
+	createdByAccountId?: number;
 	startDate?: Date;
 	dueDate?: Date;
 	status: TaskStatusEnum;
+	metadata?: object;
 }
 
 export interface TaskCreationAttributes
-	extends Omit<TaskAttributes, "id" | "arn" | "createdAt" | "updatedAt" | "deletedAt"> {
-}
+	extends Omit<TaskAttributes, "id" | "arn" | "createdAt" | "updatedAt" | "deletedAt"> {}
 
 export interface TaskUpdateAttributes
 	extends Partial<
@@ -42,14 +41,13 @@ export interface TaskUpdateAttributes
 			| "title"
 			| "taskDetail"
 			| "assignedAccountId"
-			| "assignedUserId"
 			| "assignedGroupId"
 			| "startDate"
 			| "dueDate"
 			| "status"
+			| "metadata"
 		>
-	> {
-}
+	> {}
 
 @Table({
 	tableName: "tasks",
@@ -68,7 +66,11 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes> implemen
 	priority: TaskAttributes["priority"];
 
 	@Column
+	@ForeignKey(() => TaskType)
 	taskTypeId: number;
+
+	@BelongsTo(() => TaskType)
+	taskType: TaskType;
 
 	@Column
 	title: string;
@@ -76,20 +78,14 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes> implemen
 	@Column
 	taskDetail: string;
 
-	@Column
-	assignedAccountId: number;
+	@Column(DataType.ARRAY(DataType.INTEGER))
+	assignedAccountId: number[];
 
-	@Column
-	assignedUserId: number;
-
-	@Column
-	assignedGroupId: number;
+	@Column(DataType.ARRAY(DataType.INTEGER))
+	assignedGroupId: number[];
 
 	@Column
 	createdByAccountId: number;
-
-	@Column
-	createdByUserId: number;
 
 	@Column
 	startDate: Date;
@@ -100,13 +96,18 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes> implemen
 	@Column(DataType.STRING)
 	status: TaskAttributes["status"];
 
+	@Column({
+		type: DataType.JSONB,
+	})
+	metadata: object;
+
 	static get arnPattern(): string {
 		return [container.resolve("appPrefix"), "<region>", "<orgId>", "<accountId>", "tasks/<taskId>"].join(":");
 	}
 
 	get arn(): string {
 		return [container.resolve("appPrefix"), this.region, this.orgId, this.createdByAccountId, `tasks/${this.id}`].join(
-			":",
+			":"
 		);
 	}
 }

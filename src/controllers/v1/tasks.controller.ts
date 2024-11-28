@@ -12,6 +12,7 @@ import {
 import { pick } from "lodash";
 import { TaskAttributes } from "../../../database/models/task";
 import { TasksRepository } from "../../modules/tasks/tasks.repository";
+import { TasksService } from "../../modules/tasks/tasks.service";
 import { TaskSearchParamsInterface } from "../../interfaces/task-search-params.interface";
 import { TaskCreateBodyInterface } from "../../interfaces/task-create-body.interface";
 import { TaskUpdateBodyInterface } from "../../interfaces/task-update-body.interface";
@@ -31,13 +32,12 @@ export const publicTaskAttributes = [
 	"title",
 	"taskDetail",
 	"assignedAccountId",
-	"assignedUserId",
 	"assignedGroupId",
 	"createdByAccountId",
-	"createdByUserId",
 	"startDate",
 	"dueDate",
 	"status",
+	"metadata",
 	"createdAt",
 	"updatedAt",
 	"arn",
@@ -49,7 +49,10 @@ export type PublicTaskAttributes = Pick<TaskAttributes, TaskKeys>;
 @Tags("Tasks")
 @autoInjectable()
 export class TasksController extends BaseController {
-	constructor(@inject("TasksRepository") private tasksRepository: TasksRepository) {
+	constructor(
+		@inject("TasksRepository") private tasksRepository: TasksRepository,
+		@inject("TasksService") private tasksService: TasksService
+	) {
 		super();
 	}
 
@@ -63,7 +66,7 @@ export class TasksController extends BaseController {
 	@DescribeResource("Organization", ({ query }) => Number(query.orgId))
 	@ValidateFuncArgs(TaskSearchParamsValidator)
 	async search(@Queries() query: TaskSearchParamsInterface): Promise<SearchResultInterface<PublicTaskAttributes>> {
-		const { data, ...result } = await this.tasksRepository.search(query);
+		const { data, ...result } = await this.tasksService.search(query);
 
 		return {
 			data: data.map((task) => ({
@@ -84,7 +87,7 @@ export class TasksController extends BaseController {
 	@ValidateFuncArgs(TaskCreateParamsValidator)
 	@DescribeResource("Organization", ({ query }) => Number(query.orgId))
 	async create(@Queries() query: {}, @Body() body: TaskCreateBodyInterface): Promise<PublicTaskAttributes> {
-		const task = await this.tasksRepository.create(body);
+		const task = await this.tasksService.create(body);
 		this.response.status(201);
 
 		await this.eventBus.publish(
@@ -133,7 +136,7 @@ export class TasksController extends BaseController {
 		@Queries() query: {},
 		@Body() body: TaskUpdateBodyInterface
 	): Promise<PublicTaskAttributes> {
-		const task = await this.tasksRepository.update(taskId, body);
+		const task = await this.tasksService.update(taskId, body);
 
 		await this.eventBus.publish(
 			new EventMutation(this.principal.arn, task.arn, `${this.appPrefix}:tasks/update`, JSON.stringify(body))

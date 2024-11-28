@@ -4,15 +4,15 @@ export interface TaskCreateBodyInterface {
 	orgId: number;
 	region: RegionEnum;
 	priority: TaskAttributes["priority"];
-	taskTypeId: number;
+	taskTypeId?: number;
+	taskTypeCode?: string;
 	title: string;
 	taskDetail: string;
-	assignedAccountId?: number;
-	assignedUserId?: number;
-	assignedGroupId?: number;
-	createdByAccountId: number;
-	createdByUserId: number;
+	assignedAccountId?: number[];
+	assignedGroupId?: number[];
+	createdByAccountId?: number;
 	startDate?: Date;
 	dueDate?: Date;
 	status: TaskAttributes["status"];
+	metadata?: object;
 }

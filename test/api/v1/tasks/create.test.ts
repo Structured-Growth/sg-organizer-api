@@ -4,20 +4,32 @@ import { initTest } from "../../../common/init-test";
 
 describe("POST /api/v1/tasks", () => {
 	const { server, context } = initTest();
+	const randomCode = `important${Math.floor(Math.random() * 100000)}`;
 
-	it("Should create task", async () => {
+	it("Should create task type", async () => {
+		const { statusCode, body } = await server.post("/v1/task-type").send({
+			orgId: 49,
+			region: "us",
+			title: "Important",
+			code: randomCode,
+			status: "active",
+		});
+		assert.equal(statusCode, 201);
+		assert.isNumber(body.id);
+		context["taskTypeId"] = body.id;
+	});
+
+	it("Should create task with taskTypeId", async () => {
 		const { statusCode, body } = await server.post("/v1/tasks").send({
 			orgId: 49,
 			region: "us",
 			priority: "medium",
-			taskTypeId: 3,
+			taskTypeId: context.taskTypeId,
 			title: "Must",
 			taskDetail: "You must do this",
-			assignedAccountId: 1,
-			assignedUserId: 2,
-			assignedGroupId: 3,
+			assignedAccountId: [1],
+			assignedGroupId: [3],
 			createdByAccountId: 4,
-			createdByUserId: 5,
 			startDate: "2024-11-01T08:00:00Z",
 			dueDate: "2024-11-15T17:00:00Z",
 			status: "inprogress",
@@ -27,14 +39,46 @@ describe("POST /api/v1/tasks", () => {
 		assert.equal(body.orgId, 49);
 		assert.equal(body.region, "us");
 		assert.equal(body.priority, "medium");
-		assert.equal(body.taskTypeId, 3);
+		assert.equal(body.taskTypeId, context.taskTypeId);
 		assert.equal(body.title, "Must");
 		assert.equal(body.taskDetail, "You must do this");
-		assert.equal(body.assignedAccountId, 1);
-		assert.equal(body.assignedUserId, 2);
-		assert.equal(body.assignedGroupId, 3);
+		assert.deepEqual(body.assignedAccountId, [1]);
+		assert.deepEqual(body.assignedGroupId, [3]);
 		assert.equal(body.createdByAccountId, 4);
-		assert.equal(body.createdByUserId, 5);
+		assert.isNotNaN(new Date(body.startDate).getTime());
+		assert.isNotNaN(new Date(body.dueDate).getTime());
+		assert.isNotNaN(new Date(body.createdAt).getTime());
+		assert.isNotNaN(new Date(body.updatedAt).getTime());
+		assert.equal(body.status, "inprogress");
+		assert.isString(body.arn);
+	});
+
+	it("Should create task with taskTypeCode", async () => {
+		const { statusCode, body } = await server.post("/v1/tasks").send({
+			orgId: 49,
+			region: "us",
+			priority: "medium",
+			taskTypeCode: randomCode,
+			title: "Must",
+			taskDetail: "You must do this",
+			assignedAccountId: [1],
+			assignedGroupId: [3],
+			createdByAccountId: 4,
+			startDate: "2024-11-01T08:00:00Z",
+			dueDate: "2024-11-15T17:00:00Z",
+			status: "inprogress",
+		});
+		assert.equal(statusCode, 201);
+		assert.isNumber(body.id);
+		assert.equal(body.orgId, 49);
+		assert.equal(body.region, "us");
+		assert.equal(body.priority, "medium");
+		assert.equal(body.taskTypeId, context.taskTypeId);
+		assert.equal(body.title, "Must");
+		assert.equal(body.taskDetail, "You must do this");
+		assert.deepEqual(body.assignedAccountId, [1]);
+		assert.deepEqual(body.assignedGroupId, [3]);
+		assert.equal(body.createdByAccountId, 4);
 		assert.isNotNaN(new Date(body.startDate).getTime());
 		assert.isNotNaN(new Date(body.dueDate).getTime());
 		assert.isNotNaN(new Date(body.createdAt).getTime());
@@ -52,13 +96,12 @@ describe("POST /api/v1/tasks", () => {
 			title: 37,
 			taskDetail: 25,
 			assignedAccountId: "assignedAccountId",
-			assignedUserId: "assignedUserId",
 			assignedGroupId: "assignedGroupId",
 			createdByAccountId: "createdByAccountId",
-			createdByUserId: "createdByUserId",
 			startDate: 173,
 			dueDate: 174,
 			status: "pending",
+			metadata: "metadata",
 		});
 
 		assert.equal(statusCode, 422);
@@ -72,12 +115,11 @@ describe("POST /api/v1/tasks", () => {
 		assert.isString(body.validation.body.title[0]);
 		assert.isString(body.validation.body.taskDetail[0]);
 		assert.isString(body.validation.body.assignedAccountId[0]);
-		assert.isString(body.validation.body.assignedUserId[0]);
 		assert.isString(body.validation.body.assignedGroupId[0]);
 		assert.isString(body.validation.body.createdByAccountId[0]);
-		assert.isString(body.validation.body.createdByUserId[0]);
 		assert.isString(body.validation.body.startDate[0]);
 		assert.isString(body.validation.body.dueDate[0]);
 		assert.isString(body.validation.body.status[0]);
+		assert.isString(body.validation.body.metadata[0]);
 	});
 });
