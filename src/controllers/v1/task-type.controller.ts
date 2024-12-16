@@ -56,6 +56,7 @@ export class TaskTypeController extends BaseController {
 	@SuccessResponse(200, "Returns list of types")
 	@DescribeAction("task-type/search")
 	@DescribeResource("Organization", ({ query }) => Number(query.orgId))
+	@DescribeResource("TaskType", ({ query }) => query.id?.map(Number))
 	@ValidateFuncArgs(TaskTypeSearchParamsValidator)
 	async search(
 		@Queries() query: TaskTypeSearchParamsInterface

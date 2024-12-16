@@ -64,6 +64,11 @@ export class TasksController extends BaseController {
 	@SuccessResponse(200, "Returns list of tasks")
 	@DescribeAction("tasks/search")
 	@DescribeResource("Organization", ({ query }) => Number(query.orgId))
+	@DescribeResource("TaskType", ({ query }) => Number(query.taskTypeId))
+	@DescribeResource("Account", ({ query }) => query.assignedAccountId?.map(Number))
+	@DescribeResource("User", ({ query }) => query.assignedUserId?.map(Number))
+	@DescribeResource("Group", ({ query }) => query.assignedGroupId?.map(Number))
+	@DescribeResource("Task", ({ query }) => query.id?.map(Number))
 	@ValidateFuncArgs(TaskSearchParamsValidator)
 	async search(@Queries() query: TaskSearchParamsInterface): Promise<SearchResultInterface<PublicTaskAttributes>> {
 		const { data, ...result } = await this.tasksService.search(query);
@@ -85,7 +90,10 @@ export class TasksController extends BaseController {
 	@SuccessResponse(201, "Returns created task")
 	@DescribeAction("tasks/create")
 	@ValidateFuncArgs(TaskCreateParamsValidator)
-	@DescribeResource("Organization", ({ query }) => Number(query.orgId))
+	@DescribeResource("Organization", ({ body }) => Number(body.orgId))
+	@DescribeResource("TaskType", ({ body }) => Number(body.taskTypeId))
+	@DescribeResource("Account", ({ body }) => body.assignedAccountId?.map(Number))
+	@DescribeResource("User", ({ body }) => body.assignedUserId?.map(Number))
 	async create(@Queries() query: {}, @Body() body: TaskCreateBodyInterface): Promise<PublicTaskAttributes> {
 		const task = await this.tasksService.create(body);
 		this.response.status(201);

@@ -34,11 +34,11 @@ export class TaskType extends Model<TaskTypeAttributes, TaskTypeCreationAttribut
 	status: TaskTypeAttributes["status"];
 
 	static get arnPattern(): string {
-		return [container.resolve("appPrefix"), "<region>", "<orgId>", "task-type/<taskTypeId>"].join(":");
+		return [container.resolve("appPrefix"), "<region>", "<orgId>", "<accountId>", "task-types/<taskTypeId>"].join(":");
 	}
 
 	get arn(): string {
-		return [container.resolve("appPrefix"), this.region, this.orgId, `task-type/${this.id}`].join(":");
+		return [container.resolve("appPrefix"), this.region, this.orgId, "*", `task-types/${this.id}`].join(":");
 	}
 }
 

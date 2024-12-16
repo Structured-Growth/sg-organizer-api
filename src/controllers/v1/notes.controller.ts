@@ -54,6 +54,9 @@ export class NotesController extends BaseController {
 	@SuccessResponse(200, "Returns list of notes")
 	@DescribeAction("notes/search")
 	@DescribeResource("Organization", ({ query }) => Number(query.orgId))
+	@DescribeResource("Account", ({ query }) => query.accountId?.map(Number))
+	@DescribeResource("User", ({ query }) => query.userId?.map(Number))
+	@DescribeResource("Note", ({ query }) => query.id?.map(Number))
 	@ValidateFuncArgs(NoteSearchParamsValidator)
 	async search(@Queries() query: NoteSearchParamsInterface): Promise<SearchResultInterface<PublicNoteAttributes>> {
 		const { data, ...result } = await this.notesRepository.search(query);
@@ -75,7 +78,9 @@ export class NotesController extends BaseController {
 	@SuccessResponse(201, "Returns created note")
 	@DescribeAction("notes/create")
 	@ValidateFuncArgs(NoteCreateParamsValidator)
-	@DescribeResource("Organization", ({ query }) => Number(query.orgId))
+	@DescribeResource("Organization", ({ body }) => Number(body.orgId))
+	@DescribeResource("Account", ({ body }) => Number(body.accountId))
+	@DescribeResource("User", ({ body }) => Number(body.userId))
 	async create(@Queries() query: {}, @Body() body: NoteCreateBodyInterface): Promise<PublicNoteAttributes> {
 		const note = await this.notesRepository.create(body);
 		this.response.status(201);
