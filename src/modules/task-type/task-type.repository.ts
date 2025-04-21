@@ -4,8 +4,9 @@ import {
 	RepositoryInterface,
 	SearchResultInterface,
 	NotFoundError,
+	I18nType,
+	inject,
 } from "@structured-growth/microservice-sdk";
-import { isUndefined, omitBy } from "lodash";
 import TaskType, { TaskTypeCreationAttributes, TaskTypeUpdateAttributes } from "../../../database/models/task-type";
 import { TaskTypeSearchParamsInterface } from "../../interfaces/task-type-search-params.interface";
 
@@ -13,6 +14,10 @@ import { TaskTypeSearchParamsInterface } from "../../interfaces/task-type-search
 export class TaskTypeRepository
 	implements RepositoryInterface<TaskType, TaskTypeSearchParamsInterface, TaskTypeCreationAttributes>
 {
+	private i18n: I18nType;
+	constructor(@inject("i18n") private getI18n: () => I18nType) {
+		this.i18n = this.getI18n();
+	}
 	public async search(params: TaskTypeSearchParamsInterface): Promise<SearchResultInterface<TaskType>> {
 		const page = params.page || 1;
 		let limit = params.limit || 20;
@@ -71,7 +76,9 @@ export class TaskTypeRepository
 		const taskType = await this.read(id);
 
 		if (!taskType) {
-			throw new NotFoundError(`Task type ${id} not found`);
+			throw new NotFoundError(
+				`${this.i18n.__("error.task_type.name")} ${id} ${this.i18n.__("error.common.not_found")}`
+			);
 		}
 		taskType.setAttributes(params);
 
@@ -82,7 +89,9 @@ export class TaskTypeRepository
 		const n = await TaskType.destroy({ where: { id } });
 
 		if (n === 0) {
-			throw new NotFoundError(`Task type ${id} not found`);
+			throw new NotFoundError(
+				`${this.i18n.__("error.task_type.name")} ${id} ${this.i18n.__("error.common.not_found")}`
+			);
 		}
 	}
 }

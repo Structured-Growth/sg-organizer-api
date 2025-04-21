@@ -8,6 +8,7 @@ import {
 	NotFoundError,
 	SearchResultInterface,
 	ValidateFuncArgs,
+	I18nType,
 } from "@structured-growth/microservice-sdk";
 import { pick } from "lodash";
 import { NoteAttributes } from "../../../database/models/note";
@@ -42,8 +43,13 @@ export type PublicNoteAttributes = Pick<NoteAttributes, NoteKeys>;
 @Tags("Notes")
 @autoInjectable()
 export class NotesController extends BaseController {
-	constructor(@inject("NotesRepository") private notesRepository: NotesRepository) {
+	private i18n: I18nType;
+	constructor(
+		@inject("NotesRepository") private notesRepository: NotesRepository,
+		@inject("i18n") private getI18n: () => I18nType
+	) {
 		super();
+		this.i18n = this.getI18n();
 	}
 
 	/**
@@ -108,7 +114,7 @@ export class NotesController extends BaseController {
 		const note = await this.notesRepository.read(noteId);
 
 		if (!note) {
-			throw new NotFoundError(`Note ${noteId} not found`);
+			throw new NotFoundError(`${this.i18n.__("error.note.name")} ${noteId} ${this.i18n.__("error.common.not_found")}`);
 		}
 
 		return {
@@ -156,7 +162,7 @@ export class NotesController extends BaseController {
 		const note = await this.notesRepository.read(noteId);
 
 		if (!note) {
-			throw new NotFoundError(`Note ${noteId} not found`);
+			throw new NotFoundError(`${this.i18n.__("error.note.name")} ${noteId} ${this.i18n.__("error.common.not_found")}`);
 		}
 
 		await this.notesRepository.delete(noteId);

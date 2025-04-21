@@ -8,6 +8,7 @@ import {
 	NotFoundError,
 	SearchResultInterface,
 	ValidateFuncArgs,
+	I18nType,
 } from "@structured-growth/microservice-sdk";
 import { pick } from "lodash";
 import { TaskAttributes } from "../../../database/models/task";
@@ -49,11 +50,14 @@ export type PublicTaskAttributes = Pick<TaskAttributes, TaskKeys>;
 @Tags("Tasks")
 @autoInjectable()
 export class TasksController extends BaseController {
+	private i18n: I18nType;
 	constructor(
 		@inject("TasksRepository") private tasksRepository: TasksRepository,
-		@inject("TasksService") private tasksService: TasksService
+		@inject("TasksService") private tasksService: TasksService,
+		@inject("i18n") private getI18n: () => I18nType
 	) {
 		super();
+		this.i18n = this.getI18n();
 	}
 
 	/**
@@ -121,7 +125,7 @@ export class TasksController extends BaseController {
 		const task = await this.tasksRepository.read(taskId);
 
 		if (!task) {
-			throw new NotFoundError(`Task ${taskId} not found`);
+			throw new NotFoundError(`${this.i18n.__("error.task.name")} ${taskId} ${this.i18n.__("error.common.not_found")}`);
 		}
 
 		return {
@@ -169,7 +173,7 @@ export class TasksController extends BaseController {
 		const task = await this.tasksRepository.read(taskId);
 
 		if (!task) {
-			throw new NotFoundError(`Task ${taskId} not found`);
+			throw new NotFoundError(`${this.i18n.__("error.task.name")} ${taskId} ${this.i18n.__("error.common.not_found")}`);
 		}
 
 		await this.tasksRepository.delete(taskId);
