@@ -1,0 +1,71 @@
+{
+  "system": {
+    "ping":  {
+      "am": "I'm",
+      "service": "service"
+    }
+  },
+  "error": {
+    "common": {
+      "not_found": "not found"
+    },
+    "note": {
+      "name": "Note"
+    },
+    "task_type": {
+      "name": "Task Type"
+    },
+    "task": {
+      "name": "Task",
+      "id_not_found": "Task type id",
+      "code_not_found": "Task type code"
+    }
+  },
+  "validator": {
+    "common": {
+      "id": "Entity IDs",
+      "arn": "Entity ARNs",
+      "page": "Page",
+      "limit": "Limit",
+      "sort": "Sort"
+    },
+    "notes": {
+      "orgId": "Organization Id",
+      "region": "Region",
+      "accountId": "Account Id",
+      "userId": "User IDs",
+      "note": "Note",
+      "createdAtMin": "Created at minimum",
+      "createdAtMax": "Created at maximum",
+      "metadata": "Metadata",
+      "noteId": "Note Id"
+    },
+    "taskType": {
+      "orgId": "Organization Id",
+      "region": "Region",
+      "title": "Type title",
+      "code": "Type code",
+      "status": "Status",
+      "taskTypeId": "Task Type Id"
+    },
+    "tasks": {
+      "orgId": "Organization Id",
+      "region": "Region",
+      "priority": "Priority",
+      "taskTypeId": "Task type ID",
+      "taskTypeCode": "Task Type Code",
+      "title": "Title",
+      "taskDetail": "Task detail",
+      "assignedAccountId": "Assigned account Ids",
+      "assignedGroupId": "Assigned group Ids",
+      "createdByAccountId": "Created by account Ids",
+      "startDate": "Start date",
+      "dueDate": "Due date",
+      "status": "Status",
+      "createdAtMin": "Created at minimum",
+      "createdAtMax": "Created at maximum",
+      "metadata": "Metadata",
+      "taskId": "Task Id"
+    }
+  }
+}

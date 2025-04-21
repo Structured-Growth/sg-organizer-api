@@ -4,6 +4,8 @@ import {
 	RepositoryInterface,
 	SearchResultInterface,
 	NotFoundError,
+	I18nType,
+	inject,
 } from "@structured-growth/microservice-sdk";
 import { isUndefined, omitBy } from "lodash";
 import Task, { TaskCreationAttributes, TaskUpdateAttributes } from "../../../database/models/task";
@@ -11,6 +13,10 @@ import { TaskSearchParamsInterface } from "../../interfaces/task-search-params.i
 
 @autoInjectable()
 export class TasksRepository implements RepositoryInterface<Task, TaskSearchParamsInterface, TaskCreationAttributes> {
+	private i18n: I18nType;
+	constructor(@inject("i18n") private getI18n: () => I18nType) {
+		this.i18n = this.getI18n();
+	}
 	public async search(
 		params: TaskSearchParamsInterface & {
 			metadata?: Record<string, string | number>;
@@ -97,7 +103,7 @@ export class TasksRepository implements RepositoryInterface<Task, TaskSearchPara
 	public async update(id: number, params: TaskUpdateAttributes): Promise<Task> {
 		const task = await this.read(id);
 		if (!task) {
-			throw new NotFoundError(`Task ${id} not found`);
+			throw new NotFoundError(`${this.i18n.__("error.task.name")} ${id} ${this.i18n.__("error.common.not_found")}`);
 		}
 		task.setAttributes(params);
 
@@ -108,7 +114,7 @@ export class TasksRepository implements RepositoryInterface<Task, TaskSearchPara
 		const n = await Task.destroy({ where: { id } });
 
 		if (n === 0) {
-			throw new NotFoundError(`Task ${id} not found`);
+			throw new NotFoundError(`${this.i18n.__("error.task.name")} ${id} ${this.i18n.__("error.common.not_found")}`);
 		}
 	}
 }
