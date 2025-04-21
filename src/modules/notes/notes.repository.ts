@@ -4,6 +4,8 @@ import {
 	RepositoryInterface,
 	SearchResultInterface,
 	NotFoundError,
+	I18nType,
+	inject,
 } from "@structured-growth/microservice-sdk";
 import { isUndefined, omitBy } from "lodash";
 import Note, { NoteCreationAttributes, NoteUpdateAttributes } from "../../../database/models/note";
@@ -11,6 +13,10 @@ import { NoteSearchParamsInterface } from "../../interfaces/note-search-params.i
 
 @autoInjectable()
 export class NotesRepository implements RepositoryInterface<Note, NoteSearchParamsInterface, NoteCreationAttributes> {
+	private i18n: I18nType;
+	constructor(@inject("i18n") private getI18n: () => I18nType) {
+		this.i18n = this.getI18n();
+	}
 	public async search(
 		params: NoteSearchParamsInterface & {
 			metadata?: Record<string, string | number>;
@@ -75,7 +81,7 @@ export class NotesRepository implements RepositoryInterface<Note, NoteSearchPara
 	public async update(id: number, params: NoteUpdateAttributes): Promise<Note> {
 		const note = await this.read(id);
 		if (!note) {
-			throw new NotFoundError(`Note ${id} not found`);
+			throw new NotFoundError(`${this.i18n.__("error.account.name")} ${id} ${this.i18n.__("error.common.not_found")}`);
 		}
 		note.setAttributes(params);
 
@@ -86,7 +92,7 @@ export class NotesRepository implements RepositoryInterface<Note, NoteSearchPara
 		const n = await Note.destroy({ where: { id } });
 
 		if (n === 0) {
-			throw new NotFoundError(`Note ${id} not found`);
+			throw new NotFoundError(`${this.i18n.__("error.account.name")} ${id} ${this.i18n.__("error.common.not_found")}`);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-import { autoInjectable, inject, NotFoundError } from "@structured-growth/microservice-sdk";
+import { autoInjectable, inject, NotFoundError, I18nType } from "@structured-growth/microservice-sdk";
 import { TasksRepository } from "./tasks.repository";
 import { TaskTypeRepository } from "../task-type/task-type.repository";
 import Task from "../../../database/models/task";
@@ -9,10 +9,14 @@ import { SearchResultInterface } from "@structured-growth/microservice-sdk/.dist
 
 @autoInjectable()
 export class TasksService {
+	private i18n: I18nType;
 	constructor(
 		@inject("TasksRepository") private taskRepository: TasksRepository,
-		@inject("TaskTypeRepository") private taskTypeRepository: TaskTypeRepository
-	) {}
+		@inject("TaskTypeRepository") private taskTypeRepository: TaskTypeRepository,
+		@inject("i18n") private getI18n: () => I18nType
+	) {
+		this.i18n = this.getI18n();
+	}
 
 	public async search(
 		params: TaskSearchParamsInterface & {
@@ -29,7 +33,11 @@ export class TasksService {
 
 			const taskType = taskTypesResult.data[0];
 			if (!taskType) {
-				throw new NotFoundError(`Task type code ${params.taskTypeCode} not found`);
+				throw new NotFoundError(
+					`${this.i18n.__("error.task.code_not_found")} ${params.taskTypeCode} ${this.i18n.__(
+						"error.common.not_found"
+					)}`
+				);
 			}
 			taskTypeId = taskType.id;
 		}
@@ -46,7 +54,9 @@ export class TasksService {
 		if (taskTypeId) {
 			const taskType = await this.taskTypeRepository.read(taskTypeId);
 			if (!taskType) {
-				throw new NotFoundError(`Task type id ${taskTypeId} not found`);
+				throw new NotFoundError(
+					`${this.i18n.__("error.task.id_not_found")} ${taskTypeId} ${this.i18n.__("error.common.not_found")}`
+				);
 			}
 		} else if (params.taskTypeCode) {
 			const taskTypesResult = await this.taskTypeRepository.search({
@@ -56,7 +66,11 @@ export class TasksService {
 
 			const taskType = taskTypesResult.data[0];
 			if (!taskType) {
-				throw new NotFoundError(`Task type code ${params.taskTypeCode} not found`);
+				throw new NotFoundError(
+					`${this.i18n.__("error.task.code_not_found")} ${params.taskTypeCode} ${this.i18n.__(
+						"error.common.not_found"
+					)}`
+				);
 			}
 			taskTypeId = taskType.id;
 		}
@@ -73,7 +87,9 @@ export class TasksService {
 		if (taskTypeId) {
 			const taskType = await this.taskTypeRepository.read(taskTypeId);
 			if (!taskType) {
-				throw new NotFoundError(`Task type id ${taskTypeId} not found`);
+				throw new NotFoundError(
+					`${this.i18n.__("error.task.id_not_found")} ${taskTypeId} ${this.i18n.__("error.common.not_found")}`
+				);
 			}
 		} else if (params.taskTypeCode) {
 			const task = await this.taskRepository.read(taskId);
@@ -85,7 +101,11 @@ export class TasksService {
 
 			const taskType = taskTypesResult.data[0];
 			if (!taskType) {
-				throw new NotFoundError(`Task type code ${params.taskTypeCode} not found`);
+				throw new NotFoundError(
+					`${this.i18n.__("error.task.code_not_found")} ${params.taskTypeCode} ${this.i18n.__(
+						"error.common.not_found"
+					)}`
+				);
 			}
 			taskTypeId = taskType.id;
 		}
