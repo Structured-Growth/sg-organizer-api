@@ -8,6 +8,7 @@ export const TaskTypeSearchParamsValidator = joi.object({
 			title: joi.array().items(joi.string().max(50).required()).label("validator.taskType.title"),
 			code: joi.array().items(joi.string().max(50).required()).label("validator.taskType.code"),
 			status: joi.string().valid("active", "inactive", "archived").label("validator.taskType.status"),
+			includeInherited: joi.boolean().label("validator.taskType.includeInherited"),
 		})
 		.concat(CommonSearchParamsValidator),
 });

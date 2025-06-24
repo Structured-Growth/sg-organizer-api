@@ -65,7 +65,10 @@ export class TaskTypeController extends BaseController {
 	async search(
 		@Queries() query: TaskTypeSearchParamsInterface
 	): Promise<SearchResultInterface<PublicTaskTypeAttributes>> {
-		const { data, ...result } = await this.taskTypeRepository.search(query);
+		const { data, ...result } = await this.taskTypeService.search({
+			...query,
+			includeInherited: query.includeInherited?.toString() !== "false",
+		});
 		this.response.status(200);
 
 		return {

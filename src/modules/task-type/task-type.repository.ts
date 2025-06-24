@@ -10,22 +10,27 @@ import {
 import TaskType, { TaskTypeCreationAttributes, TaskTypeUpdateAttributes } from "../../../database/models/task-type";
 import { TaskTypeSearchParamsInterface } from "../../interfaces/task-type-search-params.interface";
 
+interface TaskTypeRepositorySearchParamsInterface extends Omit<TaskTypeSearchParamsInterface, "orgId"> {
+	orgId?: number[];
+	metadata?: Record<string, string>;
+}
+
 @autoInjectable()
 export class TaskTypeRepository
-	implements RepositoryInterface<TaskType, TaskTypeSearchParamsInterface, TaskTypeCreationAttributes>
+	implements RepositoryInterface<TaskType, TaskTypeRepositorySearchParamsInterface, TaskTypeCreationAttributes>
 {
 	private i18n: I18nType;
 	constructor(@inject("i18n") private getI18n: () => I18nType) {
 		this.i18n = this.getI18n();
 	}
-	public async search(params: TaskTypeSearchParamsInterface): Promise<SearchResultInterface<TaskType>> {
+	public async search(params: TaskTypeRepositorySearchParamsInterface): Promise<SearchResultInterface<TaskType>> {
 		const page = params.page || 1;
 		let limit = params.limit || 20;
 		let offset = (page - 1) * limit;
 		const where = {};
 		const order = params.sort ? (params.sort.map((item) => item.split(":")) as any) : [["createdAt", "desc"]];
 
-		params.orgId && (where["orgId"] = params.orgId);
+		params.orgId && (where["orgId"] = { [Op.in]: params.orgId });
 		params.status && (where["status"] = params.status);
 		params.id && (where["id"] = { [Op.in]: params.id });
 
