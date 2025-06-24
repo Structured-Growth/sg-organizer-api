@@ -46,7 +46,8 @@
       "title": "Type title",
       "code": "Type code",
       "status": "Status",
-      "taskTypeId": "Task Type Id"
+      "taskTypeId": "Task Type Id",
+      "includeInherited": "Include inherited"
     },
     "tasks": {
       "orgId": "Organization Id",

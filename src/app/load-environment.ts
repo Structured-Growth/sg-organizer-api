@@ -53,6 +53,7 @@ export function loadEnvironment() {
 		INTERNAL_AUTHENTICATION_JWT_SECRET: joi.string().required(),
 		OAUTH_USER_URL: joi.string().required(),
 		POLICY_SERVICE_URL: joi.string().required(),
+		ACCOUNT_API_URL: joi.string().required(),
 		DEFAULT_LANGUAGE: joi.string().required(),
 		DEFAULT_AVAILABLE_LANGUAGES: joi.string().required(),
 		DEFAULT_TRANSLATION_CACHE_EXPIRATION: joi.number().required(),
