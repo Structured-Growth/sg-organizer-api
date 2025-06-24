@@ -68,3 +68,5 @@ container.register("oAuthServiceGetUserUrl", { useValue: process.env.OAUTH_USER_
 container.register("policiesServiceUrl", { useValue: process.env.POLICY_SERVICE_URL });
 container.register("AuthService", AuthService);
 container.register("PolicyService", PolicyService);
+
+container.register("accountApiUrl", { useValue: process.env.ACCOUNT_API_URL });

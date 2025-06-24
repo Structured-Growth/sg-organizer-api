@@ -27,7 +27,7 @@ export class TasksService {
 
 		if (params.taskTypeCode) {
 			const taskTypesResult = await this.taskTypeRepository.search({
-				orgId: params.orgId,
+				orgId: [params.orgId],
 				code: [params.taskTypeCode],
 			});
 
@@ -60,7 +60,7 @@ export class TasksService {
 			}
 		} else if (params.taskTypeCode) {
 			const taskTypesResult = await this.taskTypeRepository.search({
-				orgId: params.orgId,
+				orgId: [params.orgId],
 				code: [params.taskTypeCode],
 			});
 
@@ -95,7 +95,7 @@ export class TasksService {
 			const task = await this.taskRepository.read(taskId);
 
 			const taskTypesResult = await this.taskTypeRepository.search({
-				orgId: task.orgId,
+				orgId: [task.orgId],
 				code: [params.taskTypeCode],
 			});
 
