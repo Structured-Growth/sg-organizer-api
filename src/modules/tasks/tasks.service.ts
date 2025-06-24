@@ -6,6 +6,7 @@ import { TaskCreateBodyInterface } from "../../interfaces/task-create-body.inter
 import { TaskUpdateBodyInterface } from "../../interfaces/task-update-body.interface";
 import { TaskSearchParamsInterface } from "../../interfaces/task-search-params.interface";
 import { SearchResultInterface } from "@structured-growth/microservice-sdk/.dist";
+import { TaskTypeService } from "../task-type/task-type.service";
 
 @autoInjectable()
 export class TasksService {
@@ -13,6 +14,7 @@ export class TasksService {
 	constructor(
 		@inject("TasksRepository") private taskRepository: TasksRepository,
 		@inject("TaskTypeRepository") private taskTypeRepository: TaskTypeRepository,
+		@inject("TaskTypeService") private taskTypeService: TaskTypeService,
 		@inject("i18n") private getI18n: () => I18nType
 	) {
 		this.i18n = this.getI18n();
@@ -26,9 +28,10 @@ export class TasksService {
 		let taskTypeId: number | undefined = params.taskTypeId;
 
 		if (params.taskTypeCode) {
-			const taskTypesResult = await this.taskTypeRepository.search({
-				orgId: [params.orgId],
+			const taskTypesResult = await this.taskTypeService.search({
+				orgId: params.orgId,
 				code: [params.taskTypeCode],
+				includeInherited: true,
 			});
 
 			const taskType = taskTypesResult.data[0];
@@ -59,9 +62,10 @@ export class TasksService {
 				);
 			}
 		} else if (params.taskTypeCode) {
-			const taskTypesResult = await this.taskTypeRepository.search({
-				orgId: [params.orgId],
+			const taskTypesResult = await this.taskTypeService.search({
+				orgId: params.orgId,
 				code: [params.taskTypeCode],
+				includeInherited: true,
 			});
 
 			const taskType = taskTypesResult.data[0];
@@ -94,9 +98,10 @@ export class TasksService {
 		} else if (params.taskTypeCode) {
 			const task = await this.taskRepository.read(taskId);
 
-			const taskTypesResult = await this.taskTypeRepository.search({
-				orgId: [task.orgId],
+			const taskTypesResult = await this.taskTypeService.search({
+				orgId: task.orgId,
 				code: [params.taskTypeCode],
+				includeInherited: true,
 			});
 
 			const taskType = taskTypesResult.data[0];
