@@ -9,6 +9,7 @@ import {
 	SearchResultInterface,
 	ValidateFuncArgs,
 	I18nType,
+	HashFields,
 } from "@structured-growth/microservice-sdk";
 import { pick } from "lodash";
 import { NoteAttributes } from "../../../database/models/note";
@@ -63,6 +64,7 @@ export class NotesController extends BaseController {
 	@DescribeResource("Account", ({ query }) => query.accountId?.map(Number))
 	@DescribeResource("User", ({ query }) => query.userId?.map(Number))
 	@DescribeResource("Note", ({ query }) => query.id?.map(Number))
+	@HashFields(["note"])
 	@ValidateFuncArgs(NoteSearchParamsValidator)
 	async search(@Queries() query: NoteSearchParamsInterface): Promise<SearchResultInterface<PublicNoteAttributes>> {
 		const { data, ...result } = await this.notesRepository.search(query);
@@ -87,6 +89,7 @@ export class NotesController extends BaseController {
 	@DescribeResource("Organization", ({ body }) => Number(body.orgId))
 	@DescribeResource("Account", ({ body }) => Number(body.accountId))
 	@DescribeResource("User", ({ body }) => Number(body.userId))
+	@HashFields(["note"])
 	async create(@Queries() query: {}, @Body() body: NoteCreateBodyInterface): Promise<PublicNoteAttributes> {
 		const note = await this.notesRepository.create(body);
 		this.response.status(201);
@@ -109,6 +112,7 @@ export class NotesController extends BaseController {
 	@SuccessResponse(200, "Returns note")
 	@DescribeAction("Notes/read")
 	@DescribeResource("Note", ({ params }) => Number(params.noteId))
+	@HashFields(["note"])
 	@ValidateFuncArgs(NoteReadParamsValidator)
 	async get(@Path() noteId: number): Promise<PublicNoteAttributes> {
 		const note = await this.notesRepository.read(noteId);
@@ -131,6 +135,7 @@ export class NotesController extends BaseController {
 	@SuccessResponse(200, "Returns updated note")
 	@DescribeAction("notes/update")
 	@DescribeResource("Note", ({ params }) => Number(params.noteId))
+	@HashFields(["note"])
 	@ValidateFuncArgs(NoteUpdateParamsValidator)
 	async update(
 		@Path() noteId: number,
