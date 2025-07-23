@@ -9,6 +9,7 @@ import {
 	SearchResultInterface,
 	ValidateFuncArgs,
 	I18nType,
+	HashFields,
 } from "@structured-growth/microservice-sdk";
 import { pick } from "lodash";
 import { TaskAttributes } from "../../../database/models/task";
@@ -73,6 +74,7 @@ export class TasksController extends BaseController {
 	@DescribeResource("User", ({ query }) => query.assignedUserId?.map(Number))
 	@DescribeResource("Group", ({ query }) => query.assignedGroupId?.map(Number))
 	@DescribeResource("Task", ({ query }) => query.id?.map(Number))
+	@HashFields(["title", "taskDetail", "taskTypeCode"])
 	@ValidateFuncArgs(TaskSearchParamsValidator)
 	async search(@Queries() query: TaskSearchParamsInterface): Promise<SearchResultInterface<PublicTaskAttributes>> {
 		const { data, ...result } = await this.tasksService.search(query);
@@ -98,6 +100,7 @@ export class TasksController extends BaseController {
 	@DescribeResource("TaskType", ({ body }) => Number(body.taskTypeId))
 	@DescribeResource("Account", ({ body }) => body.assignedAccountId?.map(Number))
 	@DescribeResource("User", ({ body }) => body.assignedUserId?.map(Number))
+	@HashFields(["title", "taskDetail", "taskTypeCode"])
 	async create(@Queries() query: {}, @Body() body: TaskCreateBodyInterface): Promise<PublicTaskAttributes> {
 		const task = await this.tasksService.create(body);
 		this.response.status(201);
@@ -120,6 +123,7 @@ export class TasksController extends BaseController {
 	@SuccessResponse(200, "Returns task")
 	@DescribeAction("tasks/read")
 	@DescribeResource("Task", ({ params }) => Number(params.taskId))
+	@HashFields(["title", "taskDetail", "taskTypeCode"])
 	@ValidateFuncArgs(TaskReadParamsValidator)
 	async get(@Path() taskId: number): Promise<PublicTaskAttributes> {
 		const task = await this.tasksRepository.read(taskId);
@@ -142,6 +146,7 @@ export class TasksController extends BaseController {
 	@SuccessResponse(200, "Returns updated task")
 	@DescribeAction("tasks/update")
 	@DescribeResource("Task", ({ params }) => Number(params.taskId))
+	@HashFields(["title", "taskDetail", "taskTypeCode"])
 	@ValidateFuncArgs(TaskUpdateParamsValidator)
 	async update(
 		@Path() taskId: number,
