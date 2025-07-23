@@ -9,6 +9,7 @@ import {
 	ValidateFuncArgs,
 	NotFoundError,
 	I18nType,
+	HashFields,
 } from "@structured-growth/microservice-sdk";
 import { pick } from "lodash";
 import { TaskTypeAttributes } from "../../../database/models/task-type";
@@ -61,6 +62,7 @@ export class TaskTypeController extends BaseController {
 	@DescribeAction("task-type/search")
 	@DescribeResource("Organization", ({ query }) => Number(query.orgId))
 	@DescribeResource("TaskType", ({ query }) => query.id?.map(Number))
+	@HashFields(["title", "code"])
 	@ValidateFuncArgs(TaskTypeSearchParamsValidator)
 	async search(
 		@Queries() query: TaskTypeSearchParamsInterface
@@ -88,6 +90,7 @@ export class TaskTypeController extends BaseController {
 	@SuccessResponse(201, "Returns created type")
 	@DescribeAction("task-type/create")
 	@DescribeResource("Organization", ({ body }) => Number(body.orgId))
+	@HashFields(["title", "code"])
 	@ValidateFuncArgs(TaskTypeCreateParamsValidator)
 	async create(@Queries() query: {}, @Body() body: TaskTypeCreateBodyInterface): Promise<PublicTaskTypeAttributes> {
 		const taskType = await this.taskTypeRepository.create(body);
@@ -111,6 +114,7 @@ export class TaskTypeController extends BaseController {
 	@SuccessResponse(200, "Returns type")
 	@DescribeAction("task-type/read")
 	@DescribeResource("TaskType", ({ params }) => Number(params.taskTypeId))
+	@HashFields(["title", "code"])
 	@ValidateFuncArgs(TaskTypeReadParamsValidator)
 	async get(@Path() taskTypeId: number): Promise<PublicTaskTypeAttributes> {
 		const taskType = await this.taskTypeRepository.read(taskTypeId);
@@ -135,6 +139,7 @@ export class TaskTypeController extends BaseController {
 	@SuccessResponse(200, "Returns updated type")
 	@DescribeAction("task-type/update")
 	@DescribeResource("TaskType", ({ params }) => Number(params.taskTypeId))
+	@HashFields(["title", "code"])
 	@ValidateFuncArgs(TaskTypeUpdateSearchParamsValidator)
 	async update(
 		@Path() taskTypeId: number,
